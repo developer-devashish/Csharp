@@ -1,0 +1,70 @@
+program.cs:-
+
+using RoutingDI.Services;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<StudentService>();
+
+var app = builder.Build();
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.Run();
+
+-------------------------------------------------------------------------------------------
+
+Services/StudentService.cs:-
+
+namespace RoutingDI.Services;
+
+public class StudentService
+{
+    public string GetStudent(int id)
+    {
+        return "Student ID: " + id;
+    }
+}
+
+--------------------------------------------------------------------------------
+
+controllers/StudentController.cs:-
+
+using Microsoft.AspNetCore.Mvc;
+using RoutingDI.Services;
+
+namespace RoutingDI.Controllers;
+
+public class StudentController : Controller
+{
+    private readonly StudentService service;
+
+    public StudentController(StudentService service)
+    {
+        this.service = service;
+    }
+
+    public IActionResult Details(int id)
+    {
+        ViewBag.Student = service.GetStudent(id);
+
+        return View();
+    }
+}
+
+-----------------------------------------------------------------------------------------
+
+views/Students/Details.cshtml:-
+
+<h2>Student Details</h2>
+
+<p>@ViewBag.Student</p>
