@@ -1,0 +1,107 @@
+command:-
+
+Install-Package Microsoft.EntityFrameworkCore.SqlServer
+Install-Package Microsoft.EntityFrameworkCore.Tools
+
+------------------------------------------------------------------------------------------------------
+
+Models/Student.cs:-
+
+namespace StudentCRUD.Models
+{
+    public class Student
+    {
+        public int Id { get; set; }
+
+        public string? Name { get; set; }
+
+        public int Age { get; set; }
+
+        public string? Course { get; set; }
+    }
+}
+
+--------------------------------------------------------------------------------------------------------
+
+Data/ApplicationDbContext.cs:-
+
+using Microsoft.EntityFrameworkCore;
+using StudentCRUD.Models;
+
+namespace StudentCRUD.Data
+{
+    public class ApplicationDbContext : DbContext
+    {
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+        }
+
+        public DbSet<Student> Students { get; set; }
+    }
+}
+
+----------------------------------------------------------------------------------------------------
+
+appsettings.json:-
+
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=(localdb)\\MSSQLLocalDB;Database=StudentDB;Trusted_Connection=True;TrustServerCertificate=True;"
+  },
+
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+
+  "AllowedHosts": "*"
+}
+
+-----------------------------------------------------------------------------------------------
+
+Program.cs:-
+
+using Microsoft.EntityFrameworkCore;
+using StudentCRUD.Data;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+    ));
+
+var app = builder.Build();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseRouting();
+
+app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Students}/{action=Index}/{id?}");
+
+app.Run();
+
+------------------------------------------------------------------------------------------------------
+
+command:-
+
+Add-Migration InitialCreate
+Update-Database
+
+----------------------------------------------------------------------------------------------------
+
+Controllers -> Add → New Scaffolded Item -> MVC Controller with views, using Entity Framework
