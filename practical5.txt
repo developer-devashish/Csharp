@@ -1,0 +1,23 @@
+Controller/SecureController:-
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace SecurityApp.Controllers;
+
+[Authorize]
+public class SecureController : Controller
+{
+    public IActionResult Index()
+    {
+        return View();
+    }
+}
+
+-------------------------------------------------------------------------------------
+
+view/secure/index.cshtml:-
+<h2>Secure Page</h2>
+
+<p>Welcome! You are logged in.</p>
+
+<a href="/Identity/Account/Manage">Manage Account</a>
