@@ -1,0 +1,82 @@
+Pages/Index.cshtml.cs:-
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace RazorTagHelperApp.Pages
+{
+    public class IndexModel : PageModel
+    {
+        [BindProperty]
+        public string Name { get; set; }
+
+        [BindProperty]
+        public string Email { get; set; }
+
+        [BindProperty]
+        public string Course { get; set; }
+
+        public string Message { get; set; }
+
+        public void OnGet()
+        {
+        }
+
+        public void OnPost()
+        {
+            Message = $"Student {Name} registered successfully!";
+        }
+    }
+}
+
+
+
+Pages/Index.cshtml:-
+
+@page
+@model RazorTagHelperApp.Pages.IndexModel
+
+<h2>Student Registration</h2>
+
+<form method="post">
+
+    <div>
+        <label asp-for="Name"></label>
+        <input asp-for="Name" />
+    </div>
+
+    <br />
+
+    <div>
+        <label asp-for="Email"></label>
+        <input asp-for="Email" type="email" />
+    </div>
+
+    <br />
+
+    <div>
+        <label asp-for="Course"></label>
+        <select asp-for="Course">
+            <option value="">Select Course</option>
+            <option value="BSc Computer Application">
+                BSc Computer Application
+            </option>
+            <option value="BCA">
+                BCA
+            </option>
+            <option value="MSc IT">
+                MSc IT
+            </option>
+        </select>
+    </div>
+
+    <br />
+
+    <button type="submit">Register</button>
+
+</form>
+
+@if (Model.Message != null)
+{
+    <h3>@Model.Message</h3>
+}
