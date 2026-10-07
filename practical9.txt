@@ -1,0 +1,31 @@
+Controller/StudentController.cs:-
+
+using Microsoft.AspNetCore.Mvc;
+
+namespace StudentMVC.Controllers
+{
+    public class StudentController : Controller
+    {
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+    }
+}
+
+----------------------------------------------------------------------------------
+
+Views/Home/Index.cshtml:-
+
+@{
+    ViewData["Title"] = "Student";
+}
+
+<h1>Student Page</h1>
+
+<h2>Welcome to Student Application</h2>
+
+<p>This page is created using ASP.NET Core MVC.</p>
+
+<a href="/Student/Details">View Student Details</a>
