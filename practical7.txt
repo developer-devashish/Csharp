@@ -1,0 +1,110 @@
+program.cs:-
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllersWithViews();
+
+// Enable Memory Cache
+builder.Services.AddMemoryCache();
+
+var app = builder.Build();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.Run();
+
+--------------------------------------------------------------------------------------------------
+
+HomeController.cs:-
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+
+namespace CachingApp.Controllers
+{
+    public class HomeController : Controller
+    {
+        private readonly IMemoryCache _cache;
+
+        public HomeController(IMemoryCache cache)
+        {
+            _cache = cache;
+        }
+
+        public IActionResult Index()
+        {
+            string cacheKey = "CurrentTime";
+
+            if (!_cache.TryGetValue(cacheKey, out string? currentTime))
+            {
+                currentTime = DateTime.Now.ToString("HH:mm:ss");
+
+                var cacheOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30)
+                };
+
+                _cache.Set(cacheKey, currentTime, cacheOptions);
+
+                ViewBag.Message = "Data generated and stored in cache.";
+            }
+            else
+            {
+                ViewBag.Message = "Data retrieved from cache.";
+            }
+
+            ViewBag.CurrentTime = currentTime;
+
+            return View();
+        }
+    }
+}
+
+---------------------------------------------------------------------------------------------------------------
+
+Views/Home/Index.cshtml:-
+
+@{
+    ViewData["Title"] = "Caching Example";
+}
+
+<div class="text-center">
+
+    <h1>ASP.NET Core Caching</h1>
+
+    <hr />
+
+    <h3>Current Time</h3>
+
+    <h2>@ViewBag.CurrentTime</h2>
+
+    <p>@ViewBag.Message</p>
+
+    <p>
+        Cache duration: <strong>30 seconds</strong>
+    </p>
+
+    <a asp-controller="Home"
+       asp-action="Index"
+       class="btn btn-primary">
+        Refresh
+    </a>
+
+</div>
+
+
