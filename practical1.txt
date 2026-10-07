@@ -1,0 +1,37 @@
+HomeController.cs:-
+
+using Microsoft.AspNetCore.Mvc;
+
+namespace SimpleApp.Controllers
+{
+    public class HomeController : Controller
+    {
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        public IActionResult About()
+        {
+            return View();
+        }
+    }
+}
+
+-----------------------------------------------------------------------------------------------------
+
+Views/Home/Index.cshtml:-
+
+@{
+    ViewData["Title"] = "Home";
+}
+
+<h1>Student Information</h1>
+
+<p>Welcome to my ASP.NET application.</p>
+
+<h3>Student Details</h3>
+
+<p>Name: Devashish</p>
+<p>Course: BSc Computer Application</p>
+<p>Age: 20</p>
